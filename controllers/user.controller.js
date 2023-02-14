@@ -1,58 +1,38 @@
 const User = require("../models/user.model")
 const bcrypt = require("bcrypt")
 const jwt = require("jsonwebtoken")
-const jwt_decode = require("jwt-decode")
 
-module.exports.registerUser = (req, res) => {
-  User.create(req.body)
-    .then((user) => {
-      const userToken = jwt.sign(
-        { id: user._id },
-        `${process.env.JWT_SECRET_KEY}`
-      )
-      res
-        .cookie("usertoken", userToken, { httpOnly: true })
-        .json({ message: "Registration successful", user: user })
-    })
-    .catch((err) => res.json(err))
+// getAllUsers
+// deleteUser
+// getUser
+
+const getAllUsers = async (req, res) => {
+  const users = await User.find();
+  if (!users) return res.status(204).json({ 'message': 'No users found' });
+  res.json(users);
 }
 
-module.exports.loginUser = async (req, res) => {
-  const user = await User.findOne({ email: req.body.email })
-  if (user === null) {
-    return res.sendStatus(400)
+const deleteUser = async (req, res) => {
+  if (!req?.body?.id) return res.status(400).json({ "message": 'User ID required' });
+  const user = await User.findOne({ _id: req.body.id }).exec();
+  if (!user) {
+      return res.status(204).json({ 'message': `User ID ${req.body.id} not found` });
   }
-
-  const correctPassword = await bcrypt.compare(req.body.password, user.password)
-  if (!correctPassword) {
-    return res.sendStatus(400)
-  }
-
-  const userToken = jwt.sign(
-    {
-      id: user._id,
-    },
-    `${process.env.JWT_SECRET_KEY}`
-  )
-  res
-    .cookie("usertoken", userToken, {
-      httpOnly: true,
-    })
-    .json({ message: "Login successful" })
+  const result = await user.deleteOne({ _id: req.body.id });
+  res.json(result);
 }
 
-module.exports.logoutUser = (req, res) => {
-  res.clearCookie("usertoken")
-  res.sendStatus(200)
+const getUser = async (req, res) => {
+  if (!req?.params?.id) return res.status(400).json({ "message": 'User ID required' });
+  const user = await User.findOne({ _id: req.params.id }).exec();
+  if (!user) {
+      return res.status(204).json({ 'message': `User ID ${req.params.id} not found` });
+  }
+  res.json(user);
 }
 
-module.exports.getUser = (req, res) => {
-  if (req.cookies.usertoken) {
-    const decodedToken = jwt_decode(req.cookies.usertoken)
-    const userId = decodedToken.id
-    res.json({userId: userId})
-  } else {
-    res.sendStatus(200)
-  }
-
+module.exports = {
+  getAllUsers,
+  deleteUser,
+  getUser
 }
