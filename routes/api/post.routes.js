@@ -9,9 +9,9 @@ router.route('/')
   .get(PostController.getAllPosts)
   .post([verifyJWT, verifyRoles(ROLES_LIST.Admin, ROLES_LIST.Coach)], PostController.createNewPost)
   .put([verifyJWT, verifyRoles(ROLES_LIST.Admin, ROLES_LIST.Coach)], PostController.updatePost)
-  .delete([verifyJWT, verifyRoles(ROLES_LIST.Admin, ROLES_LIST.Coach)], PostController.deletePost)
 
 router.route('/:id')
+  .delete([verifyJWT, verifyRoles(ROLES_LIST.Admin, ROLES_LIST.Coach)], PostController.deletePost)
   .get(PostController.getPost)
 
   module.exports = router

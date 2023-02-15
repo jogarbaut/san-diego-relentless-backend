@@ -18,7 +18,6 @@ const handleNewUser = async (req, res) => {
       email: email,
       password: hashedPassword,
     })
-    console.log(result, '(register.controller.js)')
     res.status(201).json({ success: `New user ${email} created. (register.controller.js)` })
   } catch (err) {
     res.status(500).json({ message: err.message })
