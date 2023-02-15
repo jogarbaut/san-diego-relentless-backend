@@ -19,6 +19,7 @@ const UserSchema = new mongoose.Schema({
       type: Number,
       default: 1001
     },
+    Player: Number,
     Admin: Number,
   },
   email: {

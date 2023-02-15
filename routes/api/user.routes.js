@@ -6,10 +6,10 @@ const verifyRoles = require('../../middleware/verifyRoles.middleware')
 const verifyJWT = require('../../middleware/verifyJWT.middleware')
 
 router.route('/')
-  .get(verifyJWT, verifyRoles(ROLES_LIST.Admin), UserController.getAllUsers)
-  .delete(verifyJWT, verifyRoles(ROLES_LIST.Admin), UserController.deleteUser)
+  .get([verifyJWT, verifyRoles(ROLES_LIST.Admin, ROLES_LIST.Coach)], UserController.getAllUsers)
+  .delete([verifyJWT, verifyRoles(ROLES_LIST.Admin, ROLES_LIST.Coach)], UserController.deleteUser)
 
 router.route('/:id')
-  .get(verifyJWT, verifyRoles(ROLES_LIST.Admin), UserController.getUser)
+  .get([verifyJWT, verifyRoles(ROLES_LIST.Admin, ROLES_LIST.Coach)], UserController.getUser)
 
 module.exports = router

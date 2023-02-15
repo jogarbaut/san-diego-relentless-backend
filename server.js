@@ -3,7 +3,6 @@ const express = require('express')
 const app = express()
 const cors = require('cors');
 const corsOptions = require("./config/corsOptions.config");
-const verifyJWT = require("./middleware/verifyJWT.middleware");
 const cookieParser = require('cookie-parser');
 const credentials = require('./middleware/credentials.middleware');
 
@@ -11,7 +10,8 @@ const PORT = `${process.env.PORT}` || 8000
 
 // Mongodb config
 const mongoose = require('mongoose');
-require('./config/mongoose.config')
+const connectDB = require('./config/mongoose.config')
+connectDB();
 
 // Middleware
 app.use(credentials)

@@ -5,10 +5,10 @@ const jwt = require('jsonwebtoken');
 const handleLogin = async (req, res) => {
   const { username, password } = req.body
   if (!username || !password)
-    return res.status(400).json({ message: "Username and password required." })
+    return res.status(400).json({ message: "Username and password required (auth.controller.js)." })
 
   const foundUser = await User.findOne({ username: username }).exec()
-  if (!foundUser) return res.sendStatus(401)
+  if (!foundUser) return res.status(401).json({ message: "Could not find user (auth.controller.js)." })
 
   const matchPassword = await bcrypt.compare(password, foundUser.password)
 
@@ -20,7 +20,7 @@ const handleLogin = async (req, res) => {
       {
         UserInfo: {
           username: foundUser.username,
-          roles: roles,
+          roles: roles
         },
       },
       `${process.env.ACCESS_TOKEN_SECRET}`,
@@ -37,6 +37,8 @@ const handleLogin = async (req, res) => {
     // Save current user with refreshToken
     foundUser.refreshToken = refreshToken
     const result = await foundUser.save()
+    console.log(result);
+    console.log(roles);
 
     // Create cookie with refresh token
     res.cookie('jwt', refreshToken, { httpOnly: true, secure: true, sameSite: 'None', maxAge: 24 * 60 * 60 * 1000 })
@@ -44,7 +46,7 @@ const handleLogin = async (req, res) => {
     // Send authorization roles and access token to user)
     res.json({ roles, accessToken })
   } else {
-    res.sendStatus(401)
+    res.status(401).json({ message: "Error when handling login in auth.controller (auth.controller.js)." })
   }
 }
 
