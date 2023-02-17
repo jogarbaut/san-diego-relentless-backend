@@ -14,4 +14,4 @@ router.route('/:id')
   .delete([verifyJWT, verifyRoles(ROLES_LIST.Admin, ROLES_LIST.Coach)], PostController.deletePost)
   .get(PostController.getPost)
 
-  module.exports = router
+module.exports = router

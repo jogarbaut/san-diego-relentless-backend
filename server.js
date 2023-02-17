@@ -16,8 +16,8 @@ connectDB();
 // Middleware
 app.use(credentials)
 app.use(cors(corsOptions))
-app.use(express.urlencoded({ extended: false }))
-app.use(express.json())
+app.use(express.json({ limit: '50mb'}))
+app.use(express.urlencoded({ extended: false, limit: '50mb' }))
 app.use(cookieParser())
 
 // Routes
@@ -26,7 +26,10 @@ app.use('/auth', require('./routes/auth.routes'));
 app.use('/refresh', require('./routes/refresh.routes'));
 app.use('/logout', require('./routes/logout.routes'));
 app.use('/posts', require('./routes/api/post.routes'));
+app.use('/featuredPosts', require('./routes/api/featuredPost.routes'));
 app.use('/users', require('./routes/api/user.routes'));
+app.use('/boyTeams', require('./routes/api/boyTeam.routes'));
+app.use('/girlTeams', require('./routes/api/girlTeam.routes'));
 
 app.listen(PORT, () => {
   console.log(`Listening on port: ${PORT}`)

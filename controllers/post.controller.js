@@ -8,7 +8,7 @@ const User = require("../models/user.model")
 // getPost
 
 const getAllPosts = async (req, res) => {
-  const posts = await Post.find().sort({ createdAt: -1 })
+  const posts = await Post.find().sort({ date: -1 })
   if (!posts) return res.sendStatus(204)
   res.json(posts)
 }
@@ -58,7 +58,7 @@ const deletePost = async (req, res) => {
   if (!post) {
       return res.status(204).json({ "message": `No post matches ID ${req.params.id}.` });
   }
-  const result = await post.deleteOne(); //
+  const result = await post.deleteOne();
   res.json(result);
 }
 
